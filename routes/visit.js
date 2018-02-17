@@ -19,21 +19,38 @@ router.route('/')
             console.log(fromDate, toDate, '-----');
             Analytics.find({
                 onDate: { $gte: fromDate, $lte: toDate }
-            },function(err, data){
+            })
+            .select({ 'onDate': 1,
+               'visit': 1,
+               'hits': 1,
+               'uniqueVisits': 1,
+               'trafficSources': 1,
+               '_id': 0
+            })
+            .exec(function(err, data){
                 if(err){
                     console.log(err);
-                    return res.json({
+                    return res.status(500).json({
                         title: 'Error Occurred'
                     });
                 }
-                res.json({
+                res.status(200).json({
                     title: 'Search completed...',
                     data: data
                 });
             });
 
         }else{
-            Analytics.findOne({}, function(err, data) {
+            Analytics.findOne({})
+            .select({ 'onDate': 1,
+               'visit': 1,
+               'hits': 1,
+               'uniqueVisits': 1,
+               'trafficSources': 1,
+               '_id': 0
+            })
+            .exec(
+              function(err, data) {
                 if(err){
 
                     console.log(err);
@@ -41,7 +58,7 @@ router.route('/')
                         title: 'Get failed'
                     });
                 }
-                res.json({
+                res.status(200).json({
                     title: 'Only one was rendered',
                     data: data
                 });
